@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "package": "dev.lemonclient.mixin.lithium",
+  "compatibilityLevel": "JAVA_17",
+  "plugin": "dev.lemonclient.MixinPlugin",
+  "client": [
+    "MixinChunkAwareBlockCollisionSweeper"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

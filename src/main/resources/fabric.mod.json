@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "name": "Lemon Client",
+  "id": "lemon-client",
+  "version": "${version}",
+  "description": "Based utility mod.",
+  "authors": [
+    "Fin_LemonKee",
+    "ImWuMie",
+    "CuteMic",
+    "trdyun",
+    "Cuican"
+  ],
+  "contact": {
+    "homepage": "http://lemonclient.cn"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/lemon-client/textures/icons/client/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "preLaunch": [
+      "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
+    ],
+    "client": [
+      "dev.lemonclient.LemonClient"
+    ]
+  },
+  "mixins": [
+    "lemon-client.mixins.json",
+    "lemon-client-baritone.mixins.json",
+    "lemon-client-indigo.mixins.json",
+    "lemon-client-sodium.mixins.json",
+    "lemon-client-canvas.mixins.json",
+    "lemon-client-lithium.mixins.json",
+    "lemon-client-indium.mixins.json"
+  ],
+  "accessWidener": "lemon-client.accesswidener",
+  "custom": {
+    "lemon-client:devbuild": "${devbuild}",
+    "lemon-client:color": "255,158,0"
+  },
+  "depends": {
+    "java": ">=17",
+    "minecraft": ["1.20", "1.20.1"],
+    "fabricloader": "*"
+  }
+}

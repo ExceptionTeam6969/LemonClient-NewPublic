@@ -1,0 +1,17 @@
+{
+  "required": false,
+  "package": "dev.lemonclient.mixin.sodium",
+  "compatibilityLevel": "JAVA_17",
+  "plugin": "dev.lemonclient.MixinPlugin",
+  "client": [
+    "MixinSodiumLightDataAccess",
+    "MixinMeshVertexConsumer",
+    "MixinSodiumBlockOcclusionCache",
+    "MixinSodiumBlockRenderer",
+    "MixinSodiumFluidRenderer",
+    "MixinSodiumBiomeColorCache"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "package": "dev.lemonclient.mixin.indigo",
+  "compatibilityLevel": "JAVA_17",
+  "plugin": "dev.lemonclient.MixinPlugin",
+  "client": [
+    "MixinAbstractBlockRenderContext"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

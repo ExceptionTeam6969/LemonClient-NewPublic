@@ -1,0 +1,12 @@
+plugins {
+    id "java"
+}
+
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+
+group "dev.lemonclient"
+version "0.1.0"
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

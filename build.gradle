@@ -1,0 +1,216 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    id "fabric-loom" version "1.4-SNAPSHOT"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "org.jetbrains.kotlin.jvm" version "1.9.10"
+}
+
+archivesBaseName = project.archives_base_name
+version = project.mod_version + (project.hasProperty("devbuild") ? ("-" + project.findProperty("devbuild")) : "")
+group = project.maven_group
+
+tasks.withType(KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = 17
+        freeCompilerArgs = [
+            "-opt-in=kotlin.RequiresOptIn",
+            "-opt-in=kotlin.contracts.ExperimentalContracts",
+            "-Xjvm-default=all-compatibility",
+            "-Xlambdas=indy",
+            "-Xcontext-receivers"
+        ]
+    }
+}
+
+repositories {
+    maven {
+        name = "Meteor Maven"
+        url = "https://maven.meteordev.org/releases"
+    }
+    maven {
+        name = "Meteor Maven Snapshots"
+        url = "https://maven.meteordev.org/snapshots"
+    }
+    maven {
+        name = 'Ladysnake Mods'
+        url = 'https://maven.ladysnake.org/releases'
+        content {
+            includeGroup 'io.github.ladysnake'
+            includeGroup 'org.ladysnake'
+            includeGroupByRegex 'dev\\.onyxstudios.*'
+        }
+    }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+    maven {
+        name = "Vram"
+        url = "https://maven.vram.io//"
+    }
+    maven {
+        name = "Chinese Repo"
+        url = "https://repository.hanbings.io/proxy"
+    }
+    maven {
+        name = "Seedfinding Maven"
+        url = "https://maven.seedfinding.com/"
+    }
+    maven {
+        name = "Seedfinding Maven Snapshots"
+        url = "https://maven-snapshots.seedfinding.com/"
+    }
+    maven {
+        name = "Curse Maven"
+        url = "https://www.cursemaven.com"
+    }
+    maven {
+        name = "Masa"
+        url = "https://masa.dy.fi/maven"
+    }
+    mavenCentral()
+}
+
+configurations {
+    libImpl
+    extraLibs
+
+    // include mods
+    modImplementation.extendsFrom(modInclude)
+    include.extendsFrom(modInclude)
+
+    // include libraries
+    implementation.extendsFrom(library)
+    shadow.extendsFrom(library)
+}
+
+dependencies {
+    // Fabric
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modInclude fabricApi.module("fabric-resource-loader-v0", project.fapi_version)
+
+    // Fabric Language Kotlin
+    modInclude "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
+
+    // Compat fixes
+    modCompileOnly fabricApi.module("fabric-renderer-indigo", project.fapi_version)
+    modCompileOnly("maven.modrinth:sodium:${project.sodium_version}") { transitive = false }
+    modCompileOnly("maven.modrinth:lithium:${project.lithium_version}") { transitive = false }
+    modCompileOnly("maven.modrinth:iris:${project.iris_version}") { transitive = false }
+    //modCompileOnly("io.vram:canvas-fabric-mc119:1.0.+") { transitive = false } // TODO: 1.19.3
+    modCompileOnly("maven.modrinth:indium:${project.indium_version}") { transitive = false }
+
+    // Baritone (https://github.com/MeteorDevelopment/baritone)
+    modCompileOnly "baritone:fabric:${project.baritone_version}-SNAPSHOT"
+
+    // Satin
+    modInclude "org.ladysnake:satin:${project.satin_version}"
+
+    // Libraries
+    library "meteordevelopment:orbit:${project.orbit_version}"
+    library "meteordevelopment:starscript:${project.starscript_version}"
+    library "org.reflections:reflections:${project.reflections_version}"
+    library("io.netty:netty-handler-proxy:${project.netty_version}") { transitive = false }
+    library("io.netty:netty-codec-socks:${project.netty_version}") { transitive = false }
+    library "com.github.LlamaLad7.MixinExtras:mixinextras-fabric:${project.mixin_extras_version}"
+    annotationProcessor "com.github.LlamaLad7.MixinExtras:mixinextras-fabric:${project.mixin_extras_version}"
+
+    // Ore Sim
+    extraLibs('com.seedfinding:mc_math:ffd2edcfcc0d18147549c88cc7d8ec6cf21b5b91') { transitive = false }
+    extraLibs('com.seedfinding:mc_seed:1ead6fcefe7e8de4b3d60cd6c4e993f1e8f33409') { transitive = false }
+    extraLibs('com.seedfinding:mc_core:d64d5f90be66300da41ef58f4f1736db2499784f') { transitive = false }
+    extraLibs('com.seedfinding:mc_noise:7e3ba65e181796c4a2a1c8881d840b2254b92962') { transitive = false }
+    extraLibs('com.seedfinding:mc_biome:41a42cb9019a552598f12089059538853e18ec78') { transitive = false }
+    extraLibs('com.seedfinding:mc_terrain:b4246cbd5880c4f8745ccb90e1b102bde3448126') { transitive = false }
+    extraLibs('com.seedfinding:mc_feature:919b7e513cc1e87e029a9cd703fc4e2dc8686229') { transitive = false }
+
+    // Seedcracker Api
+    implementation (include("com.github.19MisterX98.SeedcrackerX:seedcrackerx-api:${project.seedcracker_version}")) { transitive = false }
+
+    // Litematica
+    modImplementation fileTree(dir: 'libs', include: ['litematica-1.20.1-0.15.3.jar'])
+    modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
+
+    // 幻影盾
+    library fileTree(dir: 'libs', include: ['annotations-1.4.1.jar'])
+
+    // JSON
+    implementation "org.json:json:${project.json_version}"
+
+    // OkHttp
+    implementation (include("com.squareup.okhttp3:okhttp:4.10.0")) {transitive = false}
+
+    // Okio
+    library fileTree(dir: 'libs', includes: ['okio-3.6.0.jar'])
+
+    //Auth Form
+    library fileTree(dir: 'libs', includes: ['uiDesigner.jar'])
+    library fileTree(dir: 'libs', includes: ['flatlaf-3.3.jar'])
+
+    configurations.libImpl.dependencies.each {
+        implementation(it)
+    }
+    configurations.implementation.extendsFrom(
+        configurations.extraLibs
+    )
+
+    // Launch sub project
+    shadow project(":launch")
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/lemon-client.accesswidener")
+}
+
+afterEvaluate {
+    migrateMappings.configure {
+        outputDir = project.file("src/main/java")
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+
+    dependencies {
+        exclude {
+            it.moduleGroup == "org.slf4j"
+        }
+    }
+}
+
+processResources {
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version,
+            "devbuild": project.findProperty("devbuild") ?: "",
+            "commit": project.findProperty("commit") ?: "",
+            "minecraft_version": project.minecraft_version,
+            "loader_version": project.loader_version
+    }
+}
+
+jar {
+    from "LICENSE"
+
+    manifest {
+        attributes("Main-Class": "dev.lemonclient.Main")
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    withSourcesJar()
+}
+
+remapJar {
+    dependsOn shadowJar
+    inputFile.set(shadowJar.archiveFile)
+}

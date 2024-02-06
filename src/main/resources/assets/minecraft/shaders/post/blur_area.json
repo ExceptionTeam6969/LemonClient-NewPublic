@@ -1,0 +1,35 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "blur_area",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "uniforms": [
+        {
+          "name": "BlurDir",
+          "values": [ 1.0, 0.0 ]
+        },
+        {
+          "name": "BlurXY",
+          "values": [ 0.0, 0.0 ]
+        },
+        {
+          "name": "BlurCoord",
+          "values": [ 100.0, 100.0 ]
+        },
+        {
+          "name": "Radius",
+          "values": [ 20.0 ]
+        }
+      ]
+    },
+    {
+      "name": "blit",
+      "intarget": "swap",
+      "outtarget": "minecraft:main"
+    }
+  ]
+}

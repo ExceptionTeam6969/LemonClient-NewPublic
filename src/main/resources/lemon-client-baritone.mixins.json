@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "dev.lemonclient.mixin.baritone",
+  "compatibilityLevel": "JAVA_17",
+  "plugin": "dev.lemonclient.MixinPlugin",
+  "client": [
+    "MixinComeCommand",
+    "MixinMineProcess"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
